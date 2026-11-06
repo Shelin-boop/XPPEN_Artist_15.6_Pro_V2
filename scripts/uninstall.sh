@@ -8,8 +8,14 @@ removed=0
 skipped=0
 while IFS=$'\t' read -r expected_hash path; do
     [[ -n "$path" ]] || continue
+    # The executable may later be shared by other installed HID-BPF quirks.
+    # Never remove it automatically, even if it was first installed by us.
+    if [[ "$path" == "/usr/local/bin/udev-hid-bpf" ]]; then
+        echo "Keeping shared HID-BPF loader: $path"
+        continue
+    fi
     case "$path" in
-        /etc/udev-hid-bpf/*|/etc/udev/rules.d/*|/usr/local/bin/udev-hid-bpf) ;;
+        /etc/udev-hid-bpf/*|/etc/udev/rules.d/*) ;;
         *) echo "Skipping unexpected path: $path" >&2; ((skipped+=1)); continue ;;
     esac
     [[ -f "$path" ]] || continue
