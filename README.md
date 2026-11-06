@@ -4,6 +4,12 @@
 
 This project provides a HID-BPF quirk for the **XP-Pen Artist 15.6 Pro V2**, USB **VID:PID `28bd:096f`**. It makes the **eight express keys and dial** available as a native tablet pad in KDE Plasma on Wayland, without XP-Pen's proprietary configuration application or a third-party key remapper.
 
+## Current public release
+
+**[v0.1.0-experimental](https://github.com/Shelin-boop/XPPEN_Artist_15.6_Pro_V2/releases/tag/v0.1.0-experimental)** — experimental source release (not an upstream-approved fix). GitHub automatically offers source archives for published tags. There is **no precompiled BPF object** in this release because kernel and loader compatibility must be considered.
+
+See the [changelog](CHANGELOG.md), [test checklist](docs/TESTING.md) and [contribution guide](CONTRIBUTING.md) before deploying or reporting results.
+
 ## Verified hardware and software
 
 - XP-Pen Artist **15.6 Pro V2** (`28bd:096f`).
@@ -69,7 +75,7 @@ For **permanent installation**, the upstream `udev-hid-bpf` tool documents a sin
 sudo udevadm control --reload
 ```
 
-The `--install-exe` flag is important: the generated udev rule expects the loader executable under its configured prefix (typically `/usr/local/bin/udev-hid-bpf`). Without it, the command may fail even if a distro has a separate loader in `/usr/bin`. You may also use the reversible `scripts/install.sh` and `scripts/uninstall.sh` helper scripts on a host with the compiled loader in `~/udev-hid-bpf/builddir`.
+The `--install-exe` flag is important: the generated udev rule expects the loader executable under its configured prefix (typically `/usr/local/bin/udev-hid-bpf`). Without it, the command may fail even if a distro has a separate loader in `/usr/bin`. You may also use the `scripts/install.sh` and `scripts/uninstall.sh` helper scripts on a host with the compiled loader in `~/udev-hid-bpf/builddir`. Run them as your normal user (they invoke `sudo` when needed). **The uninstaller preserves the potentially shared `/usr/local/bin/udev-hid-bpf` executable**, even if this script installed it, to avoid breaking HID-BPF support for other devices. The uninstaller removes only tracked, unchanged tablet-specific files.
 
 Afterward, unplug/replug the tablet's USB data cable, then verify with `sudo libinput list-devices` (look for `tablet-pad`) and test all controls in KDE. Installation modifies the host's udev configuration; inspect the installed files before removing or replacing them.
 
