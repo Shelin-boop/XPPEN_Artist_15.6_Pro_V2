@@ -20,10 +20,14 @@ list_config() {
         if [[ -d "$dir" ]]; then
             sudo find "$dir" -maxdepth 1 -type f -print
         fi
-    done | LC_ALL=C sort -u
+    done
+    if [[ -f /usr/local/bin/udev-hid-bpf ]]; then
+        printf '%s\n' /usr/local/bin/udev-hid-bpf
+    fi
+| LC_ALL=C sort -u
 }
 echo "=== Installation preview ==="
-sudo "$LOADER" install --dry-run "$OBJ"
+sudo "$LOADER" install --dry-run --install-exe "$OBJ"
 for dir in /etc/udev-hid-bpf /etc/udev/rules.d; do
     if [[ -d "$dir" ]] && sudo grep -lRFq -- "$NAME" "$dir" 2>/dev/null; then
         echo "Patch appears already installed under $dir. Refusing duplicate installation." >&2
@@ -32,14 +36,15 @@ for dir in /etc/udev-hid-bpf /etc/udev/rules.d; do
 done
 list_config > "$TMP/before"
 echo "=== Installing only $NAME ==="
-sudo "$LOADER" install "$OBJ"
+sudo "$LOADER" install --install-exe "$OBJ"
 sudo udevadm control --reload
 list_config > "$TMP/after"
 comm -13 "$TMP/before" "$TMP/after" > "$TMP/new"
 : > "$MANIFEST"
 chmod 600 "$MANIFEST"
 while IFS= read -r path; do
-    if [[ "$path" == "/etc/udev-hid-bpf/$NAME" ]] ||
+    if [[ "$path" == "/usr/local/bin/udev-hid-bpf" ]] ||
+       [[ "$path" == "/etc/udev-hid-bpf/$NAME" ]] ||
        [[ "$(basename "$path")" == *Artist156ProV2* ]] ||
        sudo grep -Fq -- "$NAME" "$path" 2>/dev/null; then
         hash=$(sudo sha256sum -- "$path" | awk '{print $1}')
