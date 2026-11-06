@@ -65,9 +65,11 @@ For a targeted **manual test** of the compiled program, locate the 174-byte inte
 For **permanent installation**, the upstream `udev-hid-bpf` tool documents a single-program installer that creates a udev rule:
 
 ```bash
-./builddir/udev-hid-bpf install ./builddir/src/bpf/0010-XPPen__Artist156ProV2_experimental.bpf.o
+./builddir/udev-hid-bpf install --install-exe ./builddir/src/bpf/0010-XPPen__Artist156ProV2_experimental.bpf.o
 sudo udevadm control --reload
 ```
+
+The `--install-exe` flag is important: the generated udev rule expects the loader executable under its configured prefix (typically `/usr/local/bin/udev-hid-bpf`). Without it, the command may fail even if a distro has a separate loader in `/usr/bin`. You may also use the reversible `scripts/install.sh` and `scripts/uninstall.sh` helper scripts on a host with the compiled loader in `~/udev-hid-bpf/builddir`.
 
 Afterward, unplug/replug the tablet's USB data cable, then verify with `sudo libinput list-devices` (look for `tablet-pad`) and test all controls in KDE. Installation modifies the host's udev configuration; inspect the installed files before removing or replacing them.
 
