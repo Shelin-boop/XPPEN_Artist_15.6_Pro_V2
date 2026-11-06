@@ -19,7 +19,7 @@ See the [changelog](CHANGELOG.md), [test checklist](docs/TESTING.md) and [contri
 - The **dial** appears in the KDE settings and worked after applying its mapping several times. The reason for this initial delay has not yet been determined.
 - The **pen remains functional**, including the display mapping in the tested multi-monitor setup.
 
-The quirk has **not** been verified on a second tablet, other firmware revisions, or after a clean reboot with automatic loading.
+**Automatic loading is confirmed by the original tester** after permanent installation. The quirk has **not** been verified on a second tablet or on other firmware revisions.
 
 ## What the patch does
 
