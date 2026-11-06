@@ -1,0 +1,38 @@
+name: Publish first experimental release
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-v0.1.0.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: github.repository == 'Shelin-boop/XPPEN_Artist_15.6_Pro_V2'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out release sources
+        uses: actions/checkout@v4
+      - name: Create v0.1.0-experimental prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="v0.1.0-experimental"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $tag already exists; nothing to do."
+            exit 0
+          fi
+          gh release create "$tag" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "v0.1.0-experimental — Artist 15.6 Pro V2 native Linux pad" \
+            --notes-file RELEASE_NOTES.md \
+            --prerelease \
+            --latest=false
