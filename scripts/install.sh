@@ -16,6 +16,7 @@ chmod 700 "$STATE"
 TMP=$(mktemp -d)
 trap 'rm -rf -- "$TMP"' EXIT
 list_config() {
+    {
     for dir in /etc/udev-hid-bpf /etc/udev/rules.d; do
         if [[ -d "$dir" ]]; then
             sudo find "$dir" -maxdepth 1 -type f -print
@@ -24,7 +25,7 @@ list_config() {
     if [[ -f /usr/local/bin/udev-hid-bpf ]]; then
         printf '%s\n' /usr/local/bin/udev-hid-bpf
     fi
-| LC_ALL=C sort -u
+    } | LC_ALL=C sort -u
 }
 echo "=== Installation preview ==="
 sudo "$LOADER" install --dry-run --install-exe "$OBJ"
