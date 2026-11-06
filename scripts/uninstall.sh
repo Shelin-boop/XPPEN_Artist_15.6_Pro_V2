@@ -9,7 +9,7 @@ skipped=0
 while IFS=$'\t' read -r expected_hash path; do
     [[ -n "$path" ]] || continue
     case "$path" in
-        /etc/udev-hid-bpf/*|/etc/udev/rules.d/*) ;;
+        /etc/udev-hid-bpf/*|/etc/udev/rules.d/*|/usr/local/bin/udev-hid-bpf) ;;
         *) echo "Skipping unexpected path: $path" >&2; ((skipped+=1)); continue ;;
     esac
     [[ -f "$path" ]] || continue
