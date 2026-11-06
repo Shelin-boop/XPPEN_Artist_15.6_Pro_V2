@@ -1,0 +1,26 @@
+name: Static checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@v4
+      - name: Validate helper scripts
+        run: bash -n scripts/install.sh scripts/uninstall.sh
+      - name: Verify source and licensing metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s LICENSE
+          test -s src/0010-XPPen__Artist156ProV2_experimental.bpf.c
+          grep -Fq 'SPDX-License-Identifier: GPL-2.0-only' src/0010-XPPen__Artist156ProV2_experimental.bpf.c
+          grep -Fq '#define PID_ARTIST_15_6_PRO_V2 0x096f' src/0010-XPPen__Artist156ProV2_experimental.bpf.c
+          test -s RELEASE_NOTES.md
